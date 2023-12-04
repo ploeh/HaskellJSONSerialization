@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module JSONSerialization where
 
+import Data.ByteString.Lazy (ByteString)
 import Restaurants
 import Data.Aeson
 
@@ -13,3 +14,6 @@ instance ToJSON JSONTable where
       "minimalReservation" .= m]]
   toJSON (JSONTable (Communal (N c))) =
     object ["communalTable" .= object ["capacity" .= c]]
+
+serializeTable :: Table -> ByteString
+serializeTable = encode . JSONTable
