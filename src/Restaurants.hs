@@ -1,6 +1,19 @@
-module Restaurants (tryNatural, trySingleTable, tryCommunalTable) where
+{-# LANGUAGE PatternSynonyms #-}
+module Restaurants (
+  Natural,
+  pattern N,
+  tryNatural,
+  SingleTable,
+  pattern SingleT,
+  Table(..),
+  trySingleTable,
+  tryCommunalTable) where
 
 newtype Natural = Natural Integer deriving (Eq, Ord, Show)
+
+{-# COMPLETE N #-}
+pattern N :: Integer -> Natural
+pattern N i <- Natural i
 
 tryNatural :: Integer -> Maybe Natural
 tryNatural n
@@ -11,6 +24,11 @@ data SingleTable = SingleTable
   { singleCapacity :: Natural
   , minimalReservation :: Natural
   } deriving (Eq, Ord, Show)
+
+{-# COMPLETE SingleT #-}
+pattern SingleT :: Natural -> Natural -> SingleTable
+pattern SingleT c m <- SingleTable c m
+
 data Table = Single SingleTable | Communal Natural deriving (Eq, Show)
 
 trySingleTable :: Integer -> Integer -> Maybe SingleTable
