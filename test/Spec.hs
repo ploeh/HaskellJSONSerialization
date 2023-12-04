@@ -23,4 +23,9 @@ main = defaultMain $ hUnitTestToTests $ TestList [
     let json = "{\"communalTable\":{\"capacity\":42}}"
         actual = tryDeserializeTable json
     in tryCommunalTable 42 ~=? actual
+  ,
+  "Deserialize single table for 4" ~:
+    let json = "{\"singleTable\":{\"capacity\":4,\"minimalReservation\":3}}"
+        actual = tryDeserializeTable json
+    in trySingleTable 4 3 ~=? actual
   ]

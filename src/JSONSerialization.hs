@@ -5,12 +5,6 @@ import Data.ByteString.Lazy (ByteString)
 import Restaurants
 import Data.Aeson
 
--- instance FromJSON Natural where
---   parseJSON (Number n) = do
---     let i = truncate n
---     if i < 1 then fail "Expected a natural number" else return (N i)
---   parseJSON _ = fail "Expected a number"
-
 newtype JSONTable = JSONTable Table deriving (Eq, Show)
 
 instance FromJSON JSONTable where
