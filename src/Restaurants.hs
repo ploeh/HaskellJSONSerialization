@@ -31,11 +31,11 @@ pattern SingleT c m <- SingleTable c m
 
 data Table = Single SingleTable | Communal Natural deriving (Eq, Show)
 
-trySingleTable :: Integer -> Integer -> Maybe SingleTable
+trySingleTable :: Integer -> Integer -> Maybe Table
 trySingleTable capacity minimal = do
   c <- tryNatural capacity
   m <- tryNatural minimal
-  if c < m then Nothing else Just (SingleTable c m)
+  if c < m then Nothing else Just (Single (SingleTable c m))
 
 tryCommunalTable :: Integer -> Maybe Table
 tryCommunalTable = fmap Communal . tryNatural
