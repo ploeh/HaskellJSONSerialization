@@ -15,3 +15,15 @@ library:
   source-dirs: src
   ghc-options:
   - -Wall
+
+tests:
+  serialization-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -Wall
+    dependencies:
+    - serialization
