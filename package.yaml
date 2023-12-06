@@ -28,6 +28,7 @@ tests:
     - -Wall
     dependencies:
     - serialization
+    - raw-strings-qq
     - HUnit
     - test-framework
     - test-framework-hunit
