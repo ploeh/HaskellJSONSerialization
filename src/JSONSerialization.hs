@@ -44,7 +44,7 @@ tryDeserializeTable = fmap (\(JSONTable t) -> t) . decode
 
 -- Generics-based JSON (de)serialization
 
-newtype CommunalDTR = CommunalDTR
+newtype CommunalDTO = CommunalDTO
   { communalCapacity :: Integer
   } deriving (Eq, Show, Generic)
 
@@ -55,13 +55,13 @@ communalJSONOptions =
       "communalCapacity" -> "capacity"
       _ -> s }
 
-instance FromJSON CommunalDTR where
+instance FromJSON CommunalDTO where
   parseJSON = genericParseJSON communalJSONOptions
-instance ToJSON CommunalDTR where
+instance ToJSON CommunalDTO where
   toJSON = genericToJSON communalJSONOptions
   toEncoding = genericToEncoding communalJSONOptions
 
-data SingleDTR = SingleDTR
+data SingleDTO = SingleDTO
   { singleCapacity :: Integer
   , minimalReservation :: Integer
   } deriving (Eq, Show, Generic)
@@ -74,35 +74,35 @@ singleJSONOptions =
       "minimalReservation" -> "minimalReservation"
       _ -> s }
 
-instance FromJSON SingleDTR where
+instance FromJSON SingleDTO where
   parseJSON = genericParseJSON singleJSONOptions
-instance ToJSON SingleDTR where
+instance ToJSON SingleDTO where
   toJSON = genericToJSON singleJSONOptions
   toEncoding = genericToEncoding singleJSONOptions
 
-data TableTDR = TableTDR
-  { singleTable :: Maybe SingleDTR
-  , communalTable :: Maybe CommunalDTR
+data TableDTO = TableDTO
+  { singleTable :: Maybe SingleDTO
+  , communalTable :: Maybe CommunalDTO
   } deriving (Eq, Show, Generic)
 
 tableJSONOptions :: Options
 tableJSONOptions =
   defaultOptions { omitNothingFields = True }
 
-instance FromJSON TableTDR where
+instance FromJSON TableDTO where
   parseJSON = genericParseJSON tableJSONOptions
-instance ToJSON TableTDR where
+instance ToJSON TableDTO where
   toJSON = genericToJSON tableJSONOptions
   toEncoding = genericToEncoding tableJSONOptions
 
-tryParseTable :: TableTDR -> Maybe Table
-tryParseTable (TableTDR (Just (SingleDTR c m)) Nothing) =
+tryParseTable :: TableDTO -> Maybe Table
+tryParseTable (TableDTO (Just (SingleDTO c m)) Nothing) =
   trySingleTable c m
-tryParseTable (TableTDR Nothing (Just (CommunalDTR c))) =
+tryParseTable (TableDTO Nothing (Just (CommunalDTO c))) =
   tryCommunalTable c
 tryParseTable _ = Nothing
 
-toTableDTR :: Table -> TableTDR
-toTableDTR (Single (SingleT (N c) (N m))) =
-  TableTDR (Just (SingleDTR c m)) Nothing
-toTableDTR (Communal (N c)) = TableTDR Nothing (Just (CommunalDTR c))
+toTableDTO :: Table -> TableDTO
+toTableDTO (Single (SingleT (N c) (N m))) =
+  TableDTO (Just (SingleDTO c m)) Nothing
+toTableDTO (Communal (N c)) = TableDTO Nothing (Just (CommunalDTO c))

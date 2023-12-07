@@ -38,62 +38,62 @@ main = defaultMain $ hUnitTestToTests $ TestList [
   "Deserialize communal table via generics" ~:
     let json = [r|{"communalTable":{"capacity":42}}|]
         actual = decode json
-    in Just TableTDR {
-        communalTable = Just CommunalDTR { communalCapacity = 42 },
+    in Just TableDTO {
+        communalTable = Just CommunalDTO { communalCapacity = 42 },
         singleTable = Nothing } ~=? actual
   ,
   "Deserialize single table via generics" ~:
     let json = [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|]
         actual = decode json
-    in Just TableTDR {
+    in Just TableDTO {
         communalTable = Nothing,
         singleTable =
-          Just SingleDTR { singleCapacity = 4, minimalReservation = 3 }
+          Just SingleDTO { singleCapacity = 4, minimalReservation = 3 }
       } ~=? actual
   ,
   "Serialize communal table via generics" ~:
-    let table = TableTDR {
-          communalTable = Just CommunalDTR { communalCapacity = 42 },
+    let table = TableDTO {
+          communalTable = Just CommunalDTO { communalCapacity = 42 },
           singleTable = Nothing }
         actual = encode table
     in [r|{"communalTable":{"capacity":42}}|] ~=? actual
   ,
   "Serialize single table via generics" ~:
-    let table = TableTDR {
+    let table = TableDTO {
           communalTable = Nothing,
-          singleTable = Just SingleDTR {
+          singleTable = Just SingleDTO {
             singleCapacity = 4, minimalReservation = 3 } }
         actual = encode table
     in [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|] ~=? actual
   ,
   "Try parse communal DTO to Domain Model" ~:
-    let dto = TableTDR {
-          communalTable = Just CommunalDTR { communalCapacity = 42 },
+    let dto = TableDTO {
+          communalTable = Just CommunalDTO { communalCapacity = 42 },
           singleTable = Nothing }
         actual = tryParseTable dto
     in tryCommunalTable 42 ~=? actual
   ,
   "Try parse single DTO to Domain Model" ~:
-    let dto = TableTDR {
+    let dto = TableDTO {
           communalTable = Nothing,
-          singleTable = Just SingleDTR {
+          singleTable = Just SingleDTO {
             singleCapacity = 4, minimalReservation = 3 } }
         actual = tryParseTable dto
     in trySingleTable 4 3 ~=? actual
   ,
   "Convert single table to DTO" ~:
     let table = trySingleTable 4 3
-        actual = toTableDTR <$> table
-    in Just TableTDR {
+        actual = toTableDTO <$> table
+    in Just TableDTO {
         communalTable = Nothing,
         singleTable =
-          Just SingleDTR { singleCapacity = 4, minimalReservation = 3 }
+          Just SingleDTO { singleCapacity = 4, minimalReservation = 3 }
       } ~=? actual
   ,
   "Convert communal table to DTO" ~:
     let table = tryCommunalTable 42
-        actual = toTableDTR <$> table
-    in Just TableTDR {
-        communalTable = Just CommunalDTR { communalCapacity = 42 },
+        actual = toTableDTO <$> table
+    in Just TableDTO {
+        communalTable = Just CommunalDTO { communalCapacity = 42 },
         singleTable = Nothing } ~=? actual
   ]
