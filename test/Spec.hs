@@ -38,10 +38,31 @@ main = defaultMain $ hUnitTestToTests $ TestList [
   "Deserialize communal table via generics" ~:
     let json = [r|{"communalTable":{"capacity":42}}|]
         actual = decode json
-    in Just (TableTDR { communalTable = Just CommunalDTR { communalCapacity = 42 }, singleTable = Nothing }) ~=? actual
+    in Just TableTDR {
+        communalTable = Just CommunalDTR { communalCapacity = 42 },
+        singleTable = Nothing } ~=? actual
+  ,
+  "Deserialize single table via generics" ~:
+    let json = [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|]
+        actual = decode json
+    in Just TableTDR {
+        communalTable = Nothing,
+        singleTable =
+          Just SingleDTR { singleCapacity = 4, minimalReservation = 3 }
+      } ~=? actual
   ,
   "Serialize communal table via generics" ~:
-    let table = TableTDR { communalTable = Just CommunalDTR { communalCapacity = 42 }, singleTable = Nothing }
+    let table = TableTDR {
+          communalTable = Just CommunalDTR { communalCapacity = 42 },
+          singleTable = Nothing }
         actual = encode table
     in [r|{"communalTable":{"capacity":42}}|] ~=? actual
+  ,
+  "Serialize single table via generics" ~:
+    let table = TableTDR {
+          communalTable = Nothing,
+          singleTable = Just SingleDTR {
+            singleCapacity = 4, minimalReservation = 3 } }
+        actual = encode table
+    in [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|] ~=? actual
   ]

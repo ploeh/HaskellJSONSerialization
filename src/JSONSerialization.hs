@@ -66,8 +66,19 @@ data SingleDTR = SingleDTR
   , minimalReservation :: Integer
   } deriving (Eq, Show, Generic)
 
-instance FromJSON SingleDTR
-instance ToJSON SingleDTR
+singleJSONOptions :: Options
+singleJSONOptions =
+  defaultOptions {
+    fieldLabelModifier = \s -> case s of
+      "singleCapacity" -> "capacity"
+      "minimalReservation" -> "minimalReservation"
+      _ -> s }
+
+instance FromJSON SingleDTR where
+  parseJSON = genericParseJSON singleJSONOptions
+instance ToJSON SingleDTR where
+  toJSON = genericToJSON singleJSONOptions
+  toEncoding = genericToEncoding singleJSONOptions
 
 data TableTDR = TableTDR
   { singleTable :: Maybe SingleDTR
