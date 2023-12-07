@@ -65,4 +65,35 @@ main = defaultMain $ hUnitTestToTests $ TestList [
             singleCapacity = 4, minimalReservation = 3 } }
         actual = encode table
     in [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|] ~=? actual
+  ,
+  "Try parse communal DTO to Domain Model" ~:
+    let dto = TableTDR {
+          communalTable = Just CommunalDTR { communalCapacity = 42 },
+          singleTable = Nothing }
+        actual = tryParseTable dto
+    in tryCommunalTable 42 ~=? actual
+  ,
+  "Try parse single DTO to Domain Model" ~:
+    let dto = TableTDR {
+          communalTable = Nothing,
+          singleTable = Just SingleDTR {
+            singleCapacity = 4, minimalReservation = 3 } }
+        actual = tryParseTable dto
+    in trySingleTable 4 3 ~=? actual
+  ,
+  "Convert single table to DTO" ~:
+    let table = trySingleTable 4 3
+        actual = toTableDTR <$> table
+    in Just TableTDR {
+        communalTable = Nothing,
+        singleTable =
+          Just SingleDTR { singleCapacity = 4, minimalReservation = 3 }
+      } ~=? actual
+  ,
+  "Convert communal table to DTO" ~:
+    let table = tryCommunalTable 42
+        actual = toTableDTR <$> table
+    in Just TableTDR {
+        communalTable = Just CommunalDTR { communalCapacity = 42 },
+        singleTable = Nothing } ~=? actual
   ]
