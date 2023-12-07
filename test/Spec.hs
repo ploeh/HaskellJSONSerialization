@@ -2,6 +2,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 module Main where
 
+import Data.Aeson (decode, encode)
 import Text.RawString.QQ(r)
 import Restaurants
 import JSONSerialization
@@ -30,4 +31,17 @@ main = defaultMain $ hUnitTestToTests $ TestList [
     let json = [r|{"singleTable":{"capacity":4,"minimalReservation":3}}|]
         actual = tryDeserializeTable json
     in trySingleTable 4 3 ~=? actual
+  ,
+  -----------------------------------------------
+  -- Reflection-based API and its consequences --
+  -----------------------------------------------
+  "Deserialize communal table via generics" ~:
+    let json = [r|{"communalTable":{"capacity":42}}|]
+        actual = decode json
+    in Just (TableTDR { communalTable = Just CommunalDTR { communalCapacity = 42 }, singleTable = Nothing }) ~=? actual
+  ,
+  "Serialize communal table via generics" ~:
+    let table = TableTDR { communalTable = Just CommunalDTR { communalCapacity = 42 }, singleTable = Nothing }
+        actual = encode table
+    in [r|{"communalTable":{"capacity":42}}|] ~=? actual
   ]
