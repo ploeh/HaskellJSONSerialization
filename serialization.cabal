@@ -6,7 +6,7 @@ version:             0.1.0.0
 -- description:
 homepage:            https://github.com/githubuser/serialization#readme
 license:             BSD-3-Clause
-license-file:        LICENSE
+license-file:        COPYING
 author:              Author name here
 maintainer:          example@example.com
 copyright:           2023 Author name here
