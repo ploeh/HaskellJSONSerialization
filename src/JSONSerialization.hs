@@ -96,10 +96,8 @@ instance ToJSON TableDTO where
   toEncoding = genericToEncoding tableJSONOptions
 
 tryParseTable :: TableDTO -> Maybe Table
-tryParseTable (TableDTO (Just (SingleDTO c m)) Nothing) =
-  trySingleTable c m
-tryParseTable (TableDTO Nothing (Just (CommunalDTO c))) =
-  tryCommunalTable c
+tryParseTable (TableDTO (Just (SingleDTO c m)) Nothing) = trySingleTable c m
+tryParseTable (TableDTO Nothing (Just (CommunalDTO c))) = tryCommunalTable c
 tryParseTable _ = Nothing
 
 toTableDTO :: Table -> TableDTO
